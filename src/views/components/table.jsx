@@ -1,5 +1,31 @@
 import React from 'react';
 
+class TableRow extends React.Component {
+
+    static propTypes = {
+		data: React.PropTypes.object,
+		action: React.PropTypes.func
+	}
+
+	render() {
+		let data = this.props.data;
+
+		let tds = [];
+		Object.keys(this.props.data).forEach((key) => {
+			tds.push(<td key={key}>{data[key]}</td>);
+		});
+		let row = <tr>{tds}</tr>;
+
+		if (this.props.action) {
+			return (
+				<a onClick={this.props.action.bind(null, data)}>{row}</a>
+			);
+		}
+
+		return row;
+	}
+}
+
 export default class Table extends React.Component {
 
     static propTypes = {
@@ -13,26 +39,10 @@ export default class Table extends React.Component {
 			<table>
 				<tbody>
 					{ this.props.data.map((item) => {
-						return this.getRow(item, this.props.action);
+						return <TableRow key={item.bet_id} data={item} action={this.props.action} />;
 					}) }
 				</tbody>
 			</table>
 		);
-	}
-
-	getRow(data, action) {
-		let tds = [];
-		Object.keys(data).forEach((key) => {
-			tds.push(<td>{data[key]}</td>);
-		});
-		let row = <tr key={data.bet_id}>{tds}</tr>;
-
-		if (action) {
-			return (
-				<a onClick={action.bind(null, data)}>{row}</a>
-			);
-		}
-
-		return row;
 	}
 }
