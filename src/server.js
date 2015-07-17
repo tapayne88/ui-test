@@ -16,7 +16,10 @@ function getHtml() {
 			<head>
 				<title>SkyBet - ISOSlip</title>
 			</head>
-			<body>%s</body>
+			<body>
+				<div id="react-root">%s</div>
+				<script src="/dist/client.js"></script>
+			</body>
 		</html>
 	`);
 }
