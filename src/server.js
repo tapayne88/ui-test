@@ -3,10 +3,11 @@ import React from 'react';
 import Router from 'react-router';
 import util from 'util';
 import bunyan from 'bunyan';
+import {provideContext} from 'fluxible-addons-react';
 
-import routes from './views/Routes';
+import app from './app';
 
-let app = express();
+let server = express();
 let log = bunyan.createLogger({name: 'ISOBet'});
 
 function getHtml() {
@@ -25,28 +26,32 @@ function getHtml() {
 }
 
 // Serve static stuff
-app.use(express.static('static'));
+server.use(express.static('static'));
 
 // Ask react router to route
-app.use((req, res, next) => {
+server.use((req, res, next) => {
 	log.info('serving request [%s]', req.url);
-	Router.run(routes, req.url, (Handler, router) => {
-		let reactApp = React.renderToString(<Handler />);
+
+	let context = app.createContext();
+
+	Router.run(app.getComponent(), req.url, (Handler, router) => {
+		let rootComponent = provideContext(Handler);
+		let reactApp = React.renderToString(React.createElement(rootComponent, {context: context.getComponentContext()}));
 
 		return res.send(util.format(getHtml(), reactApp));
 	});
 });
 
 // Handle them 500's
-app.use((err, req, res, next) => {
+server.use((err, req, res, next) => {
 	log.error(err);
 	let message = '<h1>Oh no! Something went gone wrong... sorry</h1>';
 	return res.status(500).send(util.format(getHtml(), message));
 });
 
-let server = app.listen('3000', () => {
-	let host = server.address().address;
-	let port = server.address().port;
+let serverInfo = server.listen('3000', () => {
+	let host = serverInfo.address().address;
+	let port = serverInfo.address().port;
 
 	log.info(`Server running at http://${host}:${port}`);
 });

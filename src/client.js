@@ -1,8 +1,16 @@
 import React from 'react';
 import Router from 'react-router';
+import {provideContext} from 'fluxible-addons-react';
 
-import routes from './views/Routes';
+import app from './app';
 
-Router.run(routes, Router.HistoryLocation, (Handler) => {
-	React.render(<Handler />, document.getElementById('react-root'));
+let context = app.createContext();
+
+Router.run(app.getComponent(), Router.HistoryLocation, (Handler) => {
+	let rootComponent = provideContext(Handler);
+
+	React.render(
+		React.createElement(rootComponent, {context: context.getComponentContext()}),
+		document.getElementById('react-root')
+	);
 });
