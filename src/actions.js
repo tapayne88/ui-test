@@ -1,6 +1,6 @@
 import superagent from 'superagent';
 
-export default function showBets(actionContext, payload, done) {
+export function showBets(actionContext, payload, done) {
 	superagent
 		.get('http://skybettechtestapi.herokuapp.com/available')
 		.set('Accept', 'application/json')

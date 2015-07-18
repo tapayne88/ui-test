@@ -5,7 +5,7 @@ import Header from './components/header';
 import Table from './components/table';
 
 import BetStore from '../stores/betStore';
-import showBets from '../actions/showBets';
+import {showBets} from '../actions';
 
 export default class Main extends React.Component {
 

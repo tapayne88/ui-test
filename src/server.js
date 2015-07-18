@@ -7,7 +7,7 @@ import {FluxibleComponent} from 'fluxible-addons-react';
 import dispatchr from 'dispatchr';
 import serialize from 'serialize-javascript';
 
-import showBets from './actions/showBets';
+import {showBets} from './actions';
 import app from './app';
 import HTMLComponent from './views/html';
 
