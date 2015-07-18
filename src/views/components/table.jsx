@@ -44,12 +44,17 @@ export default class Table extends React.Component {
 	}
 
 	render() {
+		let title = this.props.title ? <h2>{this.props.title}</h2> : '';
+
 		return (
-			<table>
-				<tbody>
-					{ this.renderTableRows(this.props.data, this.props.action) }
-				</tbody>
-			</table>
+			<div>
+				{title}
+				<table>
+					<tbody>
+						{ this.renderTableRows(this.props.data, this.props.action) }
+					</tbody>
+				</table>
+			</div>
 		);
 	}
 }

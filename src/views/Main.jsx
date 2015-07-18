@@ -42,7 +42,7 @@ export default class Main extends React.Component {
 		return (
 			<div>
 				<Header />
-				<Table data={this.state.bets} action={(data) => { this.addToBetslip(data) }} />
+				<Table title="Avaliable Bets" data={this.state.bets} action={(data) => { this.addToBetslip(data) }} />
 			</div>
 		);
 	}
