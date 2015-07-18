@@ -11,7 +11,7 @@ export default class BetStore extends BaseStore {
 	constructor(dispatcher) {
 		super(dispatcher);
 
-		this.bets = [];
+		this.bets = {};
 	}
 
 	getAll() {
@@ -19,8 +19,16 @@ export default class BetStore extends BaseStore {
 	}
 
 	receiveBets(payload) {
-		this.bets = this.bets.concat(payload);
+		this.bets = this.mergeBets(this.bets, payload);
 		this.emitChange();
+	}
+
+	mergeBets(bets, data) {
+		data.forEach((item) => {
+			bets[item.bet_id] = item;
+		});
+
+		return bets
 	}
 
 	dehydrate() {

@@ -29,17 +29,25 @@ export default class Table extends React.Component {
 
     static propTypes = {
 		title: React.PropTypes.string,
-		data: React.PropTypes.array,
+		data: React.PropTypes.object,
 		action: React.PropTypes.func
+	}
+
+	renderTableRows(data, action) {
+		let rows = [];
+
+		Object.keys(data).forEach((key) => {
+			rows.push(<TableRow key={key} data={data[key]} action={action} />);
+		})
+
+		return rows;
 	}
 
 	render() {
 		return (
 			<table>
 				<tbody>
-					{ this.props.data.map((item) => {
-						return <TableRow key={item.bet_id} data={item} action={this.props.action} />;
-					}) }
+					{ this.renderTableRows(this.props.data, this.props.action) }
 				</tbody>
 			</table>
 		);
