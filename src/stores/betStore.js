@@ -22,4 +22,14 @@ export default class BetStore extends BaseStore {
 		this.bets = this.bets.concat(payload);
 		this.emitChange();
 	}
+
+	dehydrate() {
+		return {
+			bets: this.bets
+		}
+	}
+
+	rehydrate(state) {
+		this.bets = state.bets;
+	}
 }

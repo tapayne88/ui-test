@@ -3,18 +3,19 @@ import Router from 'react-router';
 import dispatchr from 'dispatchr';
 import {FluxibleComponent} from 'fluxible-addons-react';
 
-import BetStore from './stores/betStore';
 import app from './app';
 
-let context = app.createContext();
+app.rehydrate(window.App, (err, context) => {
+	if (err) throw err;
 
-Router.run(app.getComponent(), Router.HistoryLocation, (Handler) => {
-	React.render(
-		React.createElement(
-			FluxibleComponent,
-			{ context: context.getComponentContext() },
-			<Handler />
-		),
-		document.getElementById('react-root')
-	);
+	Router.run(app.getComponent(), Router.HistoryLocation, (Handler) => {
+		React.render(
+			React.createElement(
+				FluxibleComponent,
+				{ context: context.getComponentContext() },
+				<Handler />
+			),
+			document.getElementById('react-root')
+		);
+	});
 });

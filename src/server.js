@@ -5,28 +5,14 @@ import util from 'util';
 import bunyan from 'bunyan';
 import {FluxibleComponent} from 'fluxible-addons-react';
 import dispatchr from 'dispatchr';
+import serialize from 'serialize-javascript';
 
-import BetStore from './stores/betStore';
 import showBets from './actions/showBets';
 import app from './app';
+import HTMLComponent from './views/html';
 
 let server = express();
 let log = bunyan.createLogger({name: 'ISOBet'});
-
-function getHtml() {
-	return (`
-		<!doctype html>
-		<html>
-			<head>
-				<title>SkyBet - ISOSlip</title>
-			</head>
-			<body>
-				<div id="react-root">%s</div>
-				<script src="/dist/client.js"></script>
-			</body>
-		</html>
-	`);
-}
 
 // Serve static stuff
 server.use(express.static('static'));
@@ -35,9 +21,6 @@ server.use(express.static('static'));
 server.use((req, res, next) => {
 	log.info('serving request [%s]', req.url);
 
-	let dispatcher = dispatchr.createDispatcher({
-		stores: [ BetStore ]
-	});
 	let context = app.createContext();
 
 	Router.run(app.getComponent(), req.url, (Handler, router) => {
@@ -51,8 +34,14 @@ server.use((req, res, next) => {
 					<Handler />
 				)
 			);
+			let exposed = 'window.App='+ serialize(app.dehydrate(context)) +';';
+			let client = '/dist/client.js';
 
-			return res.send(util.format(getHtml(), reactApp));
+			return res.send(
+				React.renderToStaticMarkup(
+					<HTMLComponent title="SkyBet - ISOBet" markup={reactApp} state={exposed} client={client} />
+				)
+			);
 		});
 	});
 });
