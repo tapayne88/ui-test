@@ -1,5 +1,25 @@
-import {EventEmitter} from 'events';
+import BaseStore from 'dispatchr/addons/BaseStore';
 
-export default class BetStore extends EventEmitter {
+export default class BetStore extends BaseStore {
+
 	static storeName = 'BetStore';
+
+	static handlers = {
+		'RECEIVE_BETS': 'receiveBets'
+	}
+
+	constructor(dispatcher) {
+		super(dispatcher);
+
+		this.bets = [];
+	}
+
+	getAll() {
+		return this.bets;
+	}
+
+	receiveBets(payload) {
+		this.bets = this.bets.concat(payload);
+		this.emitChange();
+	}
 }
