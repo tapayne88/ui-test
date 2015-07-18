@@ -18,7 +18,8 @@
     "node-libs-browser": "^0.5.2",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
-    "serialize-javascript": "^1.0.0"
+    "serialize-javascript": "^1.0.0",
+    "superagent": "^1.2.0"
   },
   "devDependencies": {
     "babel-core": "^5.7.4",
