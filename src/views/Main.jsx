@@ -8,11 +8,16 @@ import BetStore from '../stores/betStore';
 
 export default class Main extends React.Component {
 
-	constructor(props) {
-		super(props);
+	static contextTypes = {
+		getStore: React.PropTypes.func,
+		executeAction: React.PropTypes.func
+	}
 
-		this.getStore = props.context.getStore;
-		this.executeAction = props.context.executeAction;
+	constructor(props, context) {
+		super(props, context);
+
+		this.getStore = context.getStore;
+		this.executeAction = context.executeAction;
 
 		this.state = this.getStateFromStore();
 	}

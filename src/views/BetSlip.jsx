@@ -1,7 +1,9 @@
 import React from 'react';
 
 import Header from './components/header';
+import Nav from './components/Nav';
 import Slip from './components/slip';
+import Receipt from './components/receipt';
 import Odds from './components/odds';
 
 import BetStore from '../stores/betStore';
@@ -17,16 +19,22 @@ export default class BetSlip extends React.Component {
 		initialStake: 1
 	};
 
-	constructor(props) {
-		super(props);
+	static contextTypes = {
+		getStore: React.PropTypes.func,
+		executeAction: React.PropTypes.func
+	}
 
-		this.getStore = props.context.getStore;
-		this.executeAction = props.context.executeAction;
+	constructor(props, context) {
+		super(props, context);
 
-		this.bet_id = this.props.params.bet_id;
+		this.getStore = context.getStore;
+		this.executeAction = context.executeAction;
 
 		this.state = Object.assign(
-			{ stake: this.props.initialStake },
+			{
+				bet_id: this.props.params.bet_id,
+				stake: this.props.initialStake
+			},
 			this.getStateFromStore()
 		);
 	}
@@ -41,16 +49,19 @@ export default class BetSlip extends React.Component {
 
 	getStateFromStore() {
 		let betStore = this.getStore(BetStore);
-		let selection = betStore.getBet(this.bet_id);
+		let selection = betStore.getBet(this.props.params.bet_id);
+		let receipt = betStore.getReceipt();
 
 		return {
 			event: selection.event,
 			name: selection.name,
-			odds: selection.odds
+			odds: selection.odds,
+			receipt: receipt
 		}
 	}
 
 	handleBetStoreChange() {
+		console.log('changing', this.state.bet_id);
 		this.setState(this.getStateFromStore());
 	}
 
@@ -60,18 +71,33 @@ export default class BetSlip extends React.Component {
 	}
 
 	placeBet() {
-		this.executeAction(placeBet, {bet_id: this.bet_id, odds: this.state.odds, stake: this.state.stake});
+		this.executeAction(placeBet, {bet_id: this.state.bet_id, odds: this.state.odds, stake: this.state.stake});
 	}
 
 	render() {
-		return (
-			<div>
-				<Header />
-				<div>{this.state.event} - {this.state.name}</div>
+		let child = '';
+		if (this.state.receipt) {
+			child = (
+				<Receipt stake={this.state.stake} odds={this.state.odds} receipt={this.state.receipt} >
+					<Odds num={this.state.odds.numerator} den={this.state.odds.denominator} frac={true} />
+				</Receipt>
+			);
+		} else {
+			child = (
+				<div>
 				<Slip stake={this.state.stake} action={(evt) => { this.updateStake(evt) }} odds={this.state.odds}>
 					<Odds num={this.state.odds.numerator} den={this.state.odds.denominator} frac={true} />
 				</Slip>
 				<button onClick={() => { this.placeBet() }}>Place bet</button>
+				</div>
+			);
+		}
+		return (
+			<div>
+				<Header />
+				<Nav />
+				<span>{this.state.event} - {this.state.name}</span>
+				{ child }
 			</div>
 		);
 	}

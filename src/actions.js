@@ -18,10 +18,10 @@ export function placeBet(actionContext, payload, done) {
 		.set('Content-Type', 'application/json')
 		.send(payload)
 		.end((err, res) => {
-			if (err) return done(err);
+			if (err) {
+				return actionContext.dispatch('BET_PLACE_FAIL', res.body);
+			}
 
-			console.log(payload);
-			console.log(res);
-			return done();
+			return actionContext.dispatch('BET_PLACE_SUCCESS', res.body);
 		});
 }

@@ -5,13 +5,16 @@ export default class BetStore extends BaseStore {
 	static storeName = 'BetStore';
 
 	static handlers = {
-		'RECEIVE_BETS': 'receiveBets'
+		'RECEIVE_BETS': 'receiveBets',
+		'BET_PLACE_SUCCESS': 'betPlaceSuccess',
+		'BET_PLACE_FAIL': 'betPlaceFail'
 	}
 
 	constructor(dispatcher) {
 		super(dispatcher);
 
 		this.bets = {};
+		this.receipt = {};
 	}
 
 	getAll() {
@@ -20,6 +23,27 @@ export default class BetStore extends BaseStore {
 
 	getBet(id) {
 		return this.bets[id];
+	}
+
+	getReceipt() {
+		let receipt = this.receipt;
+		this.receipt = {};
+
+		if (Object.getOwnPropertyNames(receipt).length === 0) {
+			return false;
+		}
+
+		return receipt;
+	}
+
+	betPlaceSuccess(payload) {
+		this.receipt = payload;
+		this.emitChange();
+	}
+
+	betPlaceFail(payload) {
+		this.receipt = payload;
+		this.emitChange();
 	}
 
 	receiveBets(payload) {
