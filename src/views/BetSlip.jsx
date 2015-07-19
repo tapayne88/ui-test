@@ -2,9 +2,7 @@ import React from 'react';
 
 import Header from './components/header';
 import Nav from './components/Nav';
-import Slip from './components/slip';
-import Receipt from './components/receipt';
-import Odds from './components/odds';
+import Selection from './components/selection';
 
 import BetStore from '../stores/betStore';
 import {placeBet} from '../actions';
@@ -71,29 +69,54 @@ export default class BetSlip extends React.Component {
 		this.context.executeAction(placeBet, {bet_id: this.state.bet_id, odds: this.state.odds, stake: this.state.stake});
 	}
 
+	renderReceipt(state) {
+		let message = '';
+		if (state.receipt.error) {
+			message = (<p>Bet placement failed: {state.receipt.error}</p>);
+		} else {
+			message = (<p>Bet Placed<br />Your Reference: {state.receipt.transaction_id}</p>);
+		}
+
+		return (
+			<div>
+				<Selection
+					odds={state.odds}
+					stake={state.stake}
+					event={state.event}
+					name={state.name}
+				/>
+				{message}
+			</div>
+		);
+	}
+
+	renderSlip(state) {
+		return (
+			<div>
+				<Selection
+					odds={state.odds}
+					stake={state.stake}
+					event={state.event}
+					name={state.name}
+					action={(evt) => { this.updateStake(evt) }}
+				/>
+				<button onClick={() => { this.placeBet() }}>Place bet</button>
+			</div>
+		);
+	}
+
 	render() {
 		let child = '';
 		if (this.state.receipt) {
-			child = (
-				<Receipt stake={this.state.stake} odds={this.state.odds} receipt={this.state.receipt} >
-					<Odds num={this.state.odds.numerator} den={this.state.odds.denominator} frac={true} />
-				</Receipt>
-			);
+			child = this.renderReceipt(this.state);
 		} else {
-			child = (
-				<div>
-				<Slip stake={this.state.stake} action={(evt) => { this.updateStake(evt) }} odds={this.state.odds}>
-					<Odds num={this.state.odds.numerator} den={this.state.odds.denominator} frac={true} />
-				</Slip>
-				<button onClick={() => { this.placeBet() }}>Place bet</button>
-				</div>
-			);
+			child = this.renderSlip(this.state);
 		}
+
 		return (
 			<div>
 				<Header />
 				<Nav />
-				<span>{this.state.event} - {this.state.name}</span>
 				{ child }
 			</div>
 		);
