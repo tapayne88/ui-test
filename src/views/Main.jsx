@@ -1,4 +1,5 @@
 import React from 'react';
+import InlineCss from 'react-inline-css';
 
 import Header from './components/header';
 import Table from './components/table';
@@ -65,13 +66,36 @@ export default class Main extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<Header />
-				<Nav betslipCount={Object.keys(this.state.betslip).length}/>
-				<Table title="Avaliable Bets">
-					{ this.renderSelections(this.state.bets) }
-				</Table>
-			</div>
+			<InlineCss stylesheet={Main.css()}>
+				<div className="container centre typeface">
+					<Header />
+					<Nav betslipCount={Object.keys(this.state.betslip).length}/>
+					<Table title="Avaliable Bets">
+						{ this.renderSelections(this.state.bets) }
+					</Table>
+				</div>
+			</InlineCss>
 		);
+	}
+
+	static css() {
+		return `
+			.full-width {
+				width: 100%;
+			}
+
+			.centre {
+				margin: auto;
+				display: block;
+			}
+
+			.typeface {
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+			}
+
+			.container {
+				max-width: 500px;
+			}
+		`;
 	}
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import InlineCss from 'react-inline-css';
 
 import Header from './components/header';
 import Nav from './components/nav';
@@ -80,7 +81,7 @@ export default class BetSlip extends React.Component {
 
 	renderReceipt(state) {
 		return (
-			<div>
+			<div className="centre text-centre">
 				{ Object.keys(this.state.receipt).map((key) => {
 					let item = this.state.receipt[key];
 
@@ -106,13 +107,13 @@ export default class BetSlip extends React.Component {
 	}
 
 	renderSlip(state) {
-		let subSection = <p>Betslip empty</p>
+		let subSection = 'Betslip empty';
 		if (Object.keys(this.state.selections).length > 0) {
-			subSection = <button onClick={() => { this.placeBets() }}>Place bet</button>;
+			subSection = <span className="padded-button  bet-button" onClick={() => { this.placeBets() }}>Place bet</span>;
 		}
 
 		return (
-			<div>
+			<div className="centre text-centre">
 				{ Object.keys(this.state.selections).map((key) => {
 					let item = this.state.selections[key];
 					return (<Selection
@@ -124,7 +125,7 @@ export default class BetSlip extends React.Component {
 						action={(evt) => { this.updateStake(evt, item.bet_id) }}
 					/>);
 				}) }
-				{subSection}
+				<p>{subSection}</p>
 			</div>
 		);
 	}
@@ -138,11 +139,55 @@ export default class BetSlip extends React.Component {
 		}
 
 		return (
-			<div>
-				<Header />
-				<Nav betslipCount={Object.keys(this.state.selections).length}/>
-				{ child }
-			</div>
+			<InlineCss stylesheet={BetSlip.css()}>
+				<div className="container centre typeface">
+					<Header />
+					<Nav betslipCount={Object.keys(this.state.selections).length}/>
+					{ child }
+				</div>
+			</InlineCss>
 		);
+	}
+
+	static css() {
+		return `
+			.full-width {
+				width: 100%;
+			}
+
+			.centre {
+				margin: auto;
+				display: block;
+			}
+
+			.typeface {
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+			}
+
+			.container {
+				max-width: 500px;
+			}
+
+			.text-centre {
+				text-align: center;
+			}
+
+			.push-top {
+				margin-top: 20px;
+			}
+
+			.padded-button {
+				padding: 5px;
+				border-radius: 4px;
+				width: 120px;
+				display: block;
+				margin: auto;
+			}
+
+			.bet-button {
+				background-color: rgb(94, 150, 213);
+				cursor: pointer;
+			}
+		`;
 	}
 }

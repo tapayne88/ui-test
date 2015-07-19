@@ -1,4 +1,5 @@
 import React from 'react';
+import InlineCss from 'react-inline-css';
 
 import Odds from './odds';
 
@@ -26,17 +27,37 @@ export default class Selection extends React.Component {
 		let content = this.props.stake;
 
 		if (this.props.action) {
-			content = <input type="number" value={this.props.stake} onChange={this.props.action} min="0.01" step="any" />;
+			content = <input className="inline-input" type="number" value={this.props.stake} onChange={this.props.action} min="0.01" step="any" />;
 		}
 
 		return (
-			<div>
-				<span>{this.props.event} - {this.props.name}</span>
-				<span>£{content}</span>
-				<p>@ {this.renderOdds(this.props.odds)} could return £{retVal}</p>
-				{ this.props.children }
-			</div>
+			<InlineCss stylesheet={Selection.css()}>
+				<div className="border-thin">
+					<p>{this.props.event} - {this.props.name}</p>
+					<p><span className="push-right">£{content}</span><span>@ {this.renderOdds(this.props.odds)} could return £{retVal}</span></p>
+					{ this.props.children }
+				</div>
+			</InlineCss>
 		);
+	}
+
+	static css() {
+		return `
+			.inline-input {
+				display: inline-block;
+				font-size: 16px;
+				width: 50px;
+			}
+
+			.push-right {
+				margin-right: 5px;
+			}
+
+			.border-thin {
+				border: 1px solid black;
+				margin-bottom: 2px;
+			}
+		`;
 	}
 
 }

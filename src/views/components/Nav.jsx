@@ -1,4 +1,5 @@
 import React from 'react';
+import InlineCss from 'react-inline-css';
 import {Link} from 'react-router';
 
 export default class Nav extends React.Component {
@@ -21,10 +22,29 @@ export default class Nav extends React.Component {
 
 	render() {
 		return (
-			<ul>
-				<li><Link to="/">Home</Link></li>
-				<li><Link to="/betslip">{ this.getBetslipTitle(this.props.betslipCount) }</Link></li>
-			</ul>
+			<InlineCss stylesheet={Nav.css()}>
+				<div className="full-width">
+					<ul className="inline-list">
+						<li><Link to="/">Home</Link></li>
+						<li><Link to="/betslip">{ this.getBetslipTitle(this.props.betslipCount) }</Link></li>
+					</ul>
+				</div>
+			</InlineCss>
 		);
+	}
+
+	static css() {
+		return `
+			.inline-list {
+				list-style-type: none;
+				text-align: center;
+				padding: 0;
+			}
+
+			.inline-list li {
+				display: inline-block;
+				padding: 0 5px;
+			}
+		`;
 	}
 }
