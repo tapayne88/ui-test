@@ -2,7 +2,7 @@ import React from 'react';
 import Fluxible from 'fluxible';
 
 import routes from './views/Routes';
-import BetStore from './stores/BetStore';
+import BetStore from './stores/betStore';
 
 let app = new Fluxible({
 	component: routes,

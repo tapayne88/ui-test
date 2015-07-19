@@ -3,8 +3,11 @@ import React from 'react';
 import Header from './components/header';
 import Table from './components/table';
 import SelectionRow from './components/selectionRow';
+import Nav from './components/nav';
 
 import BetStore from '../stores/betStore';
+
+import {addToBetslip} from '../actions';
 
 export default class Main extends React.Component {
 
@@ -31,7 +34,8 @@ export default class Main extends React.Component {
 		let betStore = this.context.getStore(BetStore);
 
 		return {
-			bets: betStore.getAll()
+			bets: betStore.getAll(),
+			betslip: betStore.getBetslip()
 		}
 	}
 
@@ -39,10 +43,21 @@ export default class Main extends React.Component {
 		this.setState(this.getStateFromStore());
 	}
 
+	addToBetslip(bet_id) {
+		this.context.executeAction(addToBetslip, bet_id);
+	}
+
 	renderSelections(data) {
 		let selections = [];
 		Object.keys(data).forEach((key) => {
-			selections.push(<SelectionRow key={key} bet_id={key} data={data[key]} />);
+			selections.push(
+				<SelectionRow
+					key={key}
+					bet_id={key}
+					data={data[key]}
+					action={(bet_id) => { this.addToBetslip(bet_id) }}
+				/>
+			);
 		});
 
 		return selections;
@@ -52,6 +67,7 @@ export default class Main extends React.Component {
 		return (
 			<div>
 				<Header />
+				<Nav betslipCount={Object.keys(this.state.betslip).length}/>
 				<Table title="Avaliable Bets">
 					{ this.renderSelections(this.state.bets) }
 				</Table>

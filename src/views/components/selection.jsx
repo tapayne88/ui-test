@@ -9,7 +9,8 @@ export default class Selection extends React.Component {
 		stake: React.PropTypes.number,
 		event: React.PropTypes.string,
 		name: React.PropTypes.string,
-		action: React.PropTypes.func
+		action: React.PropTypes.func,
+		children: React.PropTypes.element
 	}
 
 	getReturnValue(odds, stake) {
@@ -33,6 +34,7 @@ export default class Selection extends React.Component {
 				<span>{this.props.event} - {this.props.name}</span>
 				<span>£{content}</span>
 				<p>@ {this.renderOdds(this.props.odds)} could return £{retVal}</p>
+				{ this.props.children }
 			</div>
 		);
 	}

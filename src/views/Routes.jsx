@@ -8,7 +8,7 @@ import NotFound from './NotFound';
 export default (
 	<Route path="/">
 		<DefaultRoute handler={Main} />
-		<Route name="betslip" path="betslip/:bet_id" handler={BetSlip} />
+		<Route name="betslip" path="betslip" handler={BetSlip} />
 		<NotFoundRoute name="404" handler={NotFound} />
 	</Route>
 );

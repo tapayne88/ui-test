@@ -13,17 +13,14 @@ export default class SelectionRow extends React.Component {
 	render() {
 		let data = this.props.data;
 
-		let row = [];
-		Object.keys(data).forEach((key) => {
+		let row = ['event', 'name', 'odds'].map((key) => {
 			let content = data[key];
 
 			if (key === 'odds') {
-				content = <Link to="betslip" params={{bet_id: this.props.bet_id}}>
-					<Odds num={content.numerator} den={content.denominator} frac={true} />
-				</Link>;
+				content = <Odds num={content.numerator} den={content.denominator} frac={true} />;
 			}
 
-			row.push(<td key={key}>{content}</td>);
+			return (<td key={key} onClick={() => { this.props.action(this.props.bet_id) }}>{content}</td>);
 		});
 
 		return <tr>{row}</tr>;

@@ -1,11 +1,11 @@
 import React from 'react';
 
 import Header from './components/header';
-import Nav from './components/Nav';
+import Nav from './components/nav';
 import Selection from './components/selection';
 
 import BetStore from '../stores/betStore';
-import {placeBet} from '../actions';
+import {placeBets} from '../actions';
 
 export default class BetSlip extends React.Component {
 
@@ -25,13 +25,7 @@ export default class BetSlip extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
-		this.state = Object.assign(
-			{
-				bet_id: this.props.params.bet_id,
-				stake: this.props.initialStake
-			},
-			this.getStateFromStore()
-		);
+		this.state = this.getStateFromStore();
 	}
 
 	componentDidMount() {
@@ -44,63 +38,93 @@ export default class BetSlip extends React.Component {
 
 	getStateFromStore() {
 		let betStore = this.context.getStore(BetStore);
-		let selection = betStore.getBet(this.props.params.bet_id);
-		let receipt = betStore.getReceipt(this.props.params.bet_id);
+
+		let selections = this.getInitialSelections(betStore.getBetslip());
+		let receipt = betStore.getReceipt();
 
 		return {
-			event: selection.event,
-			name: selection.name,
-			odds: selection.odds,
+			selections: selections,
 			receipt: receipt,
 			showReceipt: receipt !== false
 		}
+	}
+
+	getInitialSelections(sels) {
+		let newSels = {};
+
+		Object.keys(sels).forEach((key) => {
+			let sel = sels[key];
+			sel.stake = this.props.initialStake
+
+			newSels[key] = sel;
+		});
+
+		return newSels;
 	}
 
 	handleBetStoreChange = () => {
 		this.setState(this.getStateFromStore());
 	}
 
-	updateStake(evt) {
+	updateStake(evt, bet_id) {
 		let val = parseInt(evt.target.value, 10) || 1;
-		this.setState({stake: val});
+		let selections = this.state.selections;
+		selections[bet_id].stake = val;
+
+		this.setState({selections: selections});
 	}
 
-	placeBet() {
-		this.context.executeAction(placeBet, {bet_id: this.state.bet_id, odds: this.state.odds, stake: this.state.stake});
+	placeBets() {
+		this.context.executeAction(placeBets, this.state.selections);
 	}
 
 	renderReceipt(state) {
-		let message = '';
-		if (state.receipt.error) {
-			message = (<p>Bet placement failed: {state.receipt.error}</p>);
-		} else {
-			message = (<p>Bet Placed<br />Your Reference: {state.receipt.transaction_id}</p>);
-		}
-
 		return (
 			<div>
-				<Selection
-					odds={state.odds}
-					stake={state.stake}
-					event={state.event}
-					name={state.name}
-				/>
-				{message}
+				{ Object.keys(this.state.receipt).map((key) => {
+					let item = this.state.receipt[key];
+
+					let message = '';
+					if (item.error) {
+						message = (<p>Bet placement failed: {item.error}</p>);
+					} else {
+						message = (<p>Bet Placed<br />Your Reference: {item.transaction_id}</p>);
+					}
+
+					return (<Selection
+						key={item.bet_id}
+						odds={item.odds}
+						stake={item.stake}
+						event={item.event}
+						name={item.name}
+					>
+						{message}
+					</Selection>);
+				}) }
 			</div>
 		);
 	}
 
 	renderSlip(state) {
+		let subSection = <p>Betslip empty</p>
+		if (Object.keys(this.state.selections).length > 0) {
+			subSection = <button onClick={() => { this.placeBets() }}>Place bet</button>;
+		}
+
 		return (
 			<div>
-				<Selection
-					odds={state.odds}
-					stake={state.stake}
-					event={state.event}
-					name={state.name}
-					action={(evt) => { this.updateStake(evt) }}
-				/>
-				<button onClick={() => { this.placeBet() }}>Place bet</button>
+				{ Object.keys(this.state.selections).map((key) => {
+					let item = this.state.selections[key];
+					return (<Selection
+						key={item.bet_id}
+						odds={item.odds}
+						stake={item.stake}
+						event={item.event}
+						name={item.name}
+						action={(evt) => { this.updateStake(evt, item.bet_id) }}
+					/>);
+				}) }
+				{subSection}
 			</div>
 		);
 	}
@@ -116,7 +140,7 @@ export default class BetSlip extends React.Component {
 		return (
 			<div>
 				<Header />
-				<Nav />
+				<Nav betslipCount={Object.keys(this.state.selections).length}/>
 				{ child }
 			</div>
 		);

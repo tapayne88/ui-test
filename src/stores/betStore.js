@@ -7,7 +7,10 @@ export default class BetStore extends BaseStore {
 	static handlers = {
 		'RECEIVE_BETS': 'receiveBets',
 		'BET_PLACE_SUCCESS': 'betPlaceSuccess',
-		'BET_PLACE_FAIL': 'betPlaceFail'
+		'BETSLIP_PLACE_SUCCESS': 'betSlipPlaceSuccess',
+		'BETSLIP_PLACE_FAIL': 'betPlaceFail',
+		'BET_PLACE_FAIL': 'betPlaceFail',
+		'ADD_TO_BETSLIP': 'addToBetslip'
 	}
 
 	constructor(dispatcher) {
@@ -15,6 +18,7 @@ export default class BetStore extends BaseStore {
 
 		this.bets = {};
 		this.receipt = {};
+		this.betslip = [];
 	}
 
 	getAll() {
@@ -23,6 +27,21 @@ export default class BetStore extends BaseStore {
 
 	getBet(id) {
 		return this.bets[id];
+	}
+
+	getBetslip() {
+		let bs = {};
+
+		this.betslip.forEach((item) => {
+			bs[item] = this.bets[item];
+		});
+
+		return bs;
+	}
+
+	addToBetslip(id) {
+		this.betslip.push(id);
+		this.emitChange();
 	}
 
 	getReceipt() {
@@ -37,6 +56,12 @@ export default class BetStore extends BaseStore {
 	}
 
 	betPlaceSuccess(payload) {
+		this.receipt = payload;
+		this.emitChange();
+	}
+
+	betSlipPlaceSuccess(payload) {
+		this.betslip = [];
 		this.receipt = payload;
 		this.emitChange();
 	}
