@@ -16,29 +16,26 @@ export default class Main extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
-		this.getStore = context.getStore;
-		this.executeAction = context.executeAction;
-
 		this.state = this.getStateFromStore();
 	}
 
 	componentDidMount() {
-		this.getStore(BetStore).addChangeListener(() => { this.handleBetStoreChange() });
+		this.context.getStore(BetStore).addChangeListener(this.handleBetStoreChange);
 	}
 
 	componentWillUnmount() {
-		this.getStore(BetStore).removeChangeListener(() => { this.handleBetStoreChange() });
+		this.context.getStore(BetStore).removeChangeListener(this.handleBetStoreChange);
 	}
 
 	getStateFromStore() {
-		let betStore = this.getStore(BetStore);
+		let betStore = this.context.getStore(BetStore);
 
 		return {
 			bets: betStore.getAll()
 		}
 	}
 
-	handleBetStoreChange() {
+	handleBetStoreChange = () => {
 		this.setState(this.getStateFromStore());
 	}
 

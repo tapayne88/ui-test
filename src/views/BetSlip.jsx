@@ -27,9 +27,6 @@ export default class BetSlip extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
-		this.getStore = context.getStore;
-		this.executeAction = context.executeAction;
-
 		this.state = Object.assign(
 			{
 				bet_id: this.props.params.bet_id,
@@ -40,28 +37,28 @@ export default class BetSlip extends React.Component {
 	}
 
 	componentDidMount() {
-		this.getStore(BetStore).addChangeListener(() => { this.handleBetStoreChange() });
+		this.context.getStore(BetStore).addChangeListener(this.handleBetStoreChange);
 	}
 
 	componentWillUnmount() {
-		this.getStore(BetStore).removeChangeListener(() => { this.handleBetStoreChange() });
+		this.context.getStore(BetStore).removeChangeListener(this.handleBetStoreChange);
 	}
 
 	getStateFromStore() {
-		let betStore = this.getStore(BetStore);
+		let betStore = this.context.getStore(BetStore);
 		let selection = betStore.getBet(this.props.params.bet_id);
-		let receipt = betStore.getReceipt();
+		let receipt = betStore.getReceipt(this.props.params.bet_id);
 
 		return {
 			event: selection.event,
 			name: selection.name,
 			odds: selection.odds,
-			receipt: receipt
+			receipt: receipt,
+			showReceipt: receipt !== false
 		}
 	}
 
-	handleBetStoreChange() {
-		console.log('changing', this.state.bet_id);
+	handleBetStoreChange = () => {
 		this.setState(this.getStateFromStore());
 	}
 
@@ -71,7 +68,7 @@ export default class BetSlip extends React.Component {
 	}
 
 	placeBet() {
-		this.executeAction(placeBet, {bet_id: this.state.bet_id, odds: this.state.odds, stake: this.state.stake});
+		this.context.executeAction(placeBet, {bet_id: this.state.bet_id, odds: this.state.odds, stake: this.state.stake});
 	}
 
 	render() {

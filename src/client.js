@@ -1,6 +1,5 @@
 import React from 'react';
 import Router from 'react-router';
-import dispatchr from 'dispatchr';
 import {FluxibleComponent} from 'fluxible-addons-react';
 
 import app from './app';
