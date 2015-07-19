@@ -36,10 +36,17 @@ export function placeBets(actionContext, payload, done) {
 			.set('Content-Type', 'application/json')
 			.send(bet)
 			.end((err, res) => {
-				data[bet.bet_id] = res.body;
+				if (err) {
+					data[bet.bet_id] = Object.assign(
+						bet,
+						res.body
+					);
+				} else {
+					data[bet.bet_id] = res.body;
+				}
 				return done();
 			});
-	}, (err, results) => {
+	}, (err) => {
 		return actionContext.dispatch('BETSLIP_PLACE_SUCCESS', data);
 	});
 }
