@@ -11,3 +11,17 @@ export function showBets(actionContext, payload, done) {
 			return done();
 		});
 }
+
+export function placeBet(actionContext, payload, done) {
+	superagent
+		.post('http://skybettechtestapi.herokuapp.com/bets')
+		.set('Content-Type', 'application/json')
+		.send(payload)
+		.end((err, res) => {
+			if (err) return done(err);
+
+			console.log(payload);
+			console.log(res);
+			return done();
+		});
+}

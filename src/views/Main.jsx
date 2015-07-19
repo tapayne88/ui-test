@@ -1,11 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router';
 
 import Header from './components/header';
 import Table from './components/table';
+import SelectionRow from './components/selectionRow';
 
 import BetStore from '../stores/betStore';
-import {showBets} from '../actions';
 
 export default class Main extends React.Component {
 
@@ -38,17 +37,23 @@ export default class Main extends React.Component {
 		this.setState(this.getStateFromStore());
 	}
 
+	renderSelections(data) {
+		let selections = [];
+		Object.keys(data).forEach((key) => {
+			selections.push(<SelectionRow key={key} bet_id={key} data={data[key]} />);
+		});
+
+		return selections;
+	}
+
 	render() {
 		return (
 			<div>
 				<Header />
-				<Table title="Avaliable Bets" data={this.state.bets} action={(data) => { this.addToBetslip(data) }} />
+				<Table title="Avaliable Bets">
+					{ this.renderSelections(this.state.bets) }
+				</Table>
 			</div>
 		);
-	}
-
-	addToBetslip(data) {
-		this.executeAction(showBets);
-		console.log(`adding to betslip ${data.bet_id}`);
 	}
 }

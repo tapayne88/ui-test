@@ -18,6 +18,10 @@ export default class BetStore extends BaseStore {
 		return this.bets;
 	}
 
+	getBet(id) {
+		return this.bets[id];
+	}
+
 	receiveBets(payload) {
 		this.bets = this.mergeBets(this.bets, payload);
 		this.emitChange();
