@@ -42,6 +42,10 @@ export default class Table extends React.Component {
 			tr {
 				cursor: pointer;
 			}
+
+			tr.selected {
+				background-color: rgb(197, 220, 241);
+			}
 		`;
 	}
 }

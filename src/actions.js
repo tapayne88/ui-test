@@ -51,6 +51,6 @@ export function placeBets(actionContext, payload, done) {
 	});
 }
 
-export function addToBetslip(actionContext, payload, done) {
-	return actionContext.dispatch('ADD_TO_BETSLIP', payload);
+export function toggleBetslip(actionContext, payload, done) {
+	return actionContext.dispatch('TOGGLE_BETSLIP', payload);
 }

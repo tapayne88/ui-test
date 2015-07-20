@@ -7,7 +7,9 @@ export default class SelectionRow extends React.Component {
 
     static propTypes = {
 		bet_id: React.PropTypes.string,
-		data: React.PropTypes.object
+		data: React.PropTypes.object,
+		action: React.PropTypes.func,
+		selected: React.PropTypes.bool
 	}
 
 	render() {
@@ -23,7 +25,14 @@ export default class SelectionRow extends React.Component {
 			return (<td key={key} onClick={() => { this.props.action(this.props.bet_id) }}>{content}</td>);
 		});
 
-		return <tr>{row}</tr>;
+		return <tr className={this.getClassName(this.props.selected)}>{row}</tr>;
+	}
+
+	getClassName(selected) {
+		if (selected) {
+			return 'selected';
+		}
+		return '';
 	}
 }
 

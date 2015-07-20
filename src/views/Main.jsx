@@ -8,7 +8,7 @@ import Nav from './components/nav';
 
 import BetStore from '../stores/betStore';
 
-import {addToBetslip} from '../actions';
+import {toggleBetslip} from '../actions';
 
 export default class Main extends React.Component {
 
@@ -44,8 +44,12 @@ export default class Main extends React.Component {
 		this.setState(this.getStateFromStore());
 	}
 
-	addToBetslip(bet_id) {
-		this.context.executeAction(addToBetslip, bet_id);
+	toggleBetslip(bet_id) {
+		this.context.executeAction(toggleBetslip, bet_id);
+	}
+
+	inBetslip(id) {
+		return !!this.state.betslip[id];
 	}
 
 	renderSelections(data) {
@@ -53,10 +57,11 @@ export default class Main extends React.Component {
 		Object.keys(data).forEach((key) => {
 			selections.push(
 				<SelectionRow
+					selected={this.inBetslip(key)}
 					key={key}
 					bet_id={key}
 					data={data[key]}
-					action={(bet_id) => { this.addToBetslip(bet_id) }}
+					action={(bet_id) => { this.toggleBetslip(bet_id) }}
 				/>
 			);
 		});

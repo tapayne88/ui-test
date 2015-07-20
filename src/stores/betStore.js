@@ -10,7 +10,7 @@ export default class BetStore extends BaseStore {
 		'BETSLIP_PLACE_SUCCESS': 'betSlipPlaceSuccess',
 		'BETSLIP_PLACE_FAIL': 'betPlaceFail',
 		'BET_PLACE_FAIL': 'betPlaceFail',
-		'ADD_TO_BETSLIP': 'addToBetslip'
+		'TOGGLE_BETSLIP': 'toggleBetslip'
 	}
 
 	constructor(dispatcher) {
@@ -39,8 +39,15 @@ export default class BetStore extends BaseStore {
 		return bs;
 	}
 
-	addToBetslip(id) {
-		this.betslip.push(id);
+	toggleBetslip(id) {
+		if (this.betslip.indexOf(id) != -1) {
+			this.betslip = this.betslip.filter((bet) => {
+				return bet != id;
+			});
+		} else {
+			this.betslip.push(id);
+		}
+
 		this.emitChange();
 	}
 
